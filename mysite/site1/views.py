@@ -5,6 +5,6 @@ def home(request):
     return render(request,'index.html',{'name':'Tanmay'})
 
 def submit(request):
-    name = request.GET['name']
+    name = request.POST['name']
     return render(request,'success.html',{'name':name})
 
