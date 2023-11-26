@@ -7,11 +7,16 @@ def login(request):
 
 def success(request):
     if request.method=='POST':
-        usr = request.POST['username']
-        passwd = request.POST['password']
+        name = request.POST['name']
+        email = request.POST['email']
+        password = request.POST['password']
+        cpassword = request.POST['Cpassword']
 
-        new_user = Users(usr=usr, password=passwd)
+        new_user = Users(name = name, password = password, email = email)
         new_user.save()
+    
+    return render(request,'success.html')
 
-    return render(request,'success.html',{'username':usr,'pass':passwd})
+def register(request):
+    return render(request,'register.html')
 
