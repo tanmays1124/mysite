@@ -3,21 +3,9 @@ from django.http import HttpResponse
 from .models import Users
 
 
-
-
-
-
-
-
 # Create your views here.
 def login(request):
     return render(request,'login.html')
-
-
-
-
-
-
 
 
 def success(request):
@@ -31,8 +19,6 @@ def success(request):
         new_user.save()
     
     return render(request,'success.html')
-
-
 
 
 
@@ -63,7 +49,8 @@ def result(request):
 
 
 
-def home(request):
+
+def logged(request):
     return render(request, 'home.html')
 
 
