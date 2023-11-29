@@ -29,6 +29,62 @@ body {
             color: white;
         }
 
+        .container{
+            width: 90%;
+            /* border: solid 2px orange; */
+            display: flex;
+            justify-content: center;
+            padding: 4%;
+            
+        }
+        
+        .card{
+            border: solid 0px rgb(2, 2, 2);
+            display: flex;
+            flex-direction: column;
+            width:80%;
+            border-radius: 20px;
+            padding: 12px;
+            transition: all 300ms ease-in-out;
+            /* background-color: #ffffff;  */
+            box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.3);
+        }
+
+
+
+
+
+        
+        .topic{
+            /* border: solid 2px pink; */
+            display: flex;
+            justify-content: center;
+        }
+        .desc{
+            /* border: solid 2px pink; */
+            display: flex;
+            justify-content: center;
+        }
+        .difficulty{
+            /* border: solid 2px pink; */
+            display: flex;
+            flex-direction: row;
+            justify-content: space-around;
+        }
+        
+        .card:hover{
+            /* width:82%;
+            font-size: 20px; */
+            transform: scale(1.1);
+        }
+        
+        
+
+
+
+
+
+
         @media screen and (max-width: 600px) {
             .navbar a {
                 float: none;

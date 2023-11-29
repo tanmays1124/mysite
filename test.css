@@ -1,16 +1,19 @@
 .container{
-    width: 100vw;
+    width: 90%;
     /* border: solid 2px orange; */
     display: flex;
     justify-content: center;
+    padding: 4.5%;
+    
 }
 
 .card{
-    border: solid 2px red;
+    border: solid 2px pink;
     display: flex;
     flex-direction: column;
     width:80%;
     border-radius: 20px;
+    transition: all 300ms ease-in-out;
 }
 
 .topic{
@@ -31,7 +34,8 @@
 }
 
 .card:hover{
-    width:82%;
-    font-size: 20px;
+    /* width:82%;
+    font-size: 20px; */
+    transform: scale(1.1);
 }
 
