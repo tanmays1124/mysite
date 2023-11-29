@@ -1,0 +1,37 @@
+.container{
+    width: 100vw;
+    /* border: solid 2px orange; */
+    display: flex;
+    justify-content: center;
+}
+
+.card{
+    border: solid 2px red;
+    display: flex;
+    flex-direction: column;
+    width:80%;
+    border-radius: 20px;
+}
+
+.topic{
+    /* border: solid 2px pink; */
+    display: flex;
+    justify-content: center;
+}
+.desc{
+    /* border: solid 2px pink; */
+    display: flex;
+    justify-content: center;
+}
+.difficulty{
+    /* border: solid 2px pink; */
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+}
+
+.card:hover{
+    width:82%;
+    font-size: 20px;
+}
+

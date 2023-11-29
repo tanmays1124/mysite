@@ -18,11 +18,11 @@ def result(request):
     if request.method=='POST':
         password = request.POST['password']
         email = request.POST['email']
-    for i in all_instances:
-        if i.email==email and i.password==password:
-            return render(request, 'home.html',{'name':i.name})
-        else:
-            f=1
+        for i in all_instances:
+            if i.email==email and i.password==password:
+                return render(request, 'home.html',{'name':i.name})
+            else:
+                f=1
     if f==1:
         # return render(request,'result.html',{'details' : all_instances})
         return HttpResponse('<h1> user does not exists</h1>')
@@ -41,7 +41,7 @@ def register(request):
     return render(request,'register.html')
 
 # when user successfully registered in
-def success(request):
+def registering(request):
     if request.method=='POST':
         name = request.POST['name']
         email = request.POST['email']
@@ -51,7 +51,7 @@ def success(request):
         new_user = Users(name = name, password = password, email = email)
         new_user.save()
     
-    return render(request,'success.html')
+    return login(request)
 
 
 
@@ -63,13 +63,8 @@ def success(request):
 
 
 
-
-
-
-
-
-def logged(request):
-    return render(request, 'home.html')
+def home(request,name):
+    return render(request, 'home.html',{'name':name})
 
 
 

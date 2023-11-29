@@ -1,5 +1,23 @@
-<html>
-    <body>
-        welcome u r logged in...{{name}}
-    </body>
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="stylesheet" href="{% static 'home.css' %}"
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+</head>
+<body>
+
+<div class="navbar">
+    <a class="active" href="#home">{{name}}</a>
+    <a href="#about">About</a>
+    <a href="#services">Services</a>
+    <a href="#contact">Contact</a>
+</div>
+
+
+
+</body>
 </html>
