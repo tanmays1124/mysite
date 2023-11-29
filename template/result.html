@@ -1,8 +1,14 @@
+{% load static %}
 <html>
+    <head>
+        <link rel="stylesheet" href="{% static 'result.css' %}}">
+    </head>
     <body>
-        {% for i in details %}
+
+        Tanmay
+        {% comment %} {% for i in details %}
             <h1>{{ i.name }} - {{ i.password }}</h1>
             
-        {% endfor %}
+        {% endfor %} {% endcomment %}
     </body>
 </html>

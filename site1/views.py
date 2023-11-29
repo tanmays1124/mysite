@@ -31,7 +31,8 @@ def result(request):
 
 
 
-
+def res(request):
+    return render(request, 'result.html')
 
 
 
