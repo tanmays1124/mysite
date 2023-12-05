@@ -22,8 +22,7 @@ urlpatterns = [
     path('',views.login,name='login'),
     path('register',views.register,name='register'),
     path('registering',views.registering, name='registering'),
-    # path('submit',views.success,name='success'),
-    # path('logging',views.register,name='register'),
     path('logging',views.result,name='result'),
-    # path('admin/', admin.site.urls),
+    path('admin/', admin.site.urls),
+
 ]
