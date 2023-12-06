@@ -86,13 +86,7 @@ def registering(request):
         new_user.save()
         n=name
     
-<<<<<<< HEAD
     return login(request)
-=======
-    return home(request,n)
-
-
->>>>>>> 503abcfbf1a43eb0fcd00ac44952dc7eff2946c1
 
 
 
@@ -103,21 +97,3 @@ def home(request,name):
 
 
 
-<<<<<<< HEAD
-def hotel_image_view(request):
- 
-    if request.method == 'POST':
-        form = HotelForm(request.POST, request.FILES)
- 
-        if form.is_valid():
-            form.save()
-            return HttpResponse('Uploaded')
-    else:
-        form = HotelForm()
-    return render(request, 'image.html', {'form': form})
- 
- 
-def images(request):
-    return render(request,'image.html')
-=======
->>>>>>> 503abcfbf1a43eb0fcd00ac44952dc7eff2946c1
