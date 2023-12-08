@@ -14,41 +14,38 @@ def login(request):
     return render(request,'login.html')
 
 
-
 # when user tries to login
 def result(request):
-
+    f=0
     if request.method=='POST':
         password = request.POST['password']
-        email = request.POST['email']
-        
-         
+        uname = request.POST['uname']
         
         
-        client = pymongo.MongoClient("localhost", 27017)
+        
+        client = MongoClient()
 
         db = client['quiz']
-        collection = db['site1_users']
+        
 
 
-        documents = list(collection.find({}))
-        print(documents[0]['name'])
+        user_data = db.users.find_one({'username':uname})
+        print(user_data)
 
+        if user_data:
 
-        for i in documents:
-            if i['email']==email and i['password']==password:
-
-
+            if user_data['password'] == password:
                 data = {
-                    'name': i['name'],
-                    'score1': i['questions']['easy']['linux']['rank'],
-                    'score2': i['questions']['medium']['linux']['rank'],
-                    'score3': i['questions']['hard']['linux']['rank'],
+                    'name': user_data['name'],
+                    'score1': user_data['ranks']['easy']['linux'],
+                    'score2': user_data['ranks']['medium']['linux'],
+                    'score3': user_data['ranks']['difficult']['linux'],
                 }
-                return render(request, 'home.html',data)
+                return render(request, 'home.html',data)               
+
             else:
-                f=1
-    if f==1:
+                return render(request,"wrong password")
+            
         return HttpResponse('<h1> user does not exists</h1>')
 
 
@@ -75,96 +72,82 @@ def registering(request):
         name = request.POST['name']
         email = request.POST['email']
         password = request.POST['password']
-
-        # Validate user input and handle errors
-
-        # Hash the password
-        # hashed_password = password_hasher.hash(password)
+        uname = request.POST['username']
 
         # Connect to MongoDB
         client = MongoClient()
         db = client['quiz']
-        n=name
-        # Build user document
-        user_data = {
-            "_id": ObjectId(),
-            "name": name,
-            "email": email,
-            "password": password,
-            "quiz_id": ObjectId(),
-            "scores": {
-                "easy":
-                {
-                    "linux": 0,
-                    "sql": 0,
-                    "nosql": 0
+
+        username = db.users.find({'username':uname})
+
+        if username is None:
+            
+            n=name
+            # Build user document
+            user_data = {
+                "_id": ObjectId(),
+                "name": name,
+                "username": uname,
+                "email": email,
+                "password": password,
+                "quiz_id": ObjectId(),
+                "scores": {
+                    "easy":
+                    {
+                        "linux": 0,
+                        "sql": 0,
+                        "nosql": 0
+                    },
+                    "medium":
+                    {
+                        "linux": 0,
+                        "sql": 0,
+                        "nosql": 0
+                    },
+                    "difficult":
+                    {
+                        "linux": 0,
+                        "sql": 0,
+                        "nosql": 0
+                    }
                 },
-                "medium":
-                {
-                    "linux": 0,
-                    "sql": 0,
-                    "nosql": 0
-                },
-                "difficult":
-                {
-                    "linux": 0,
-                    "sql": 0,
-                    "nosql": 0
-                }
-            },
-            "ranks": {
-                "easy":
-                {
-                    "linux": "Not Ranked",
-                    "sql": "Not Ranked",
-                    "nosql": "Not Ranked"
-                },
-                "medium":
-                {
-                    "linux": "Not Ranked",
-                    "sql": "Not Ranked",
-                    "nosql": "Not Ranked"
-                },
-                "difficult":
-                {
-                    "linux": "Not Ranked",
-                    "sql": "Not Ranked",
-                    "nosql": "Not Ranked"
+                "ranks": {
+                    "easy":
+                    {
+                        "linux": "Not Ranked",
+                        "sql": "Not Ranked",
+                        "nosql": "Not Ranked"
+                    },
+                    "medium":
+                    {
+                        "linux": "Not Ranked",
+                        "sql": "Not Ranked",
+                        "nosql": "Not Ranked"
+                    },
+                    "difficult":
+                    {
+                        "linux": "Not Ranked",
+                        "sql": "Not Ranked",
+                        "nosql": "Not Ranked"
+                    }
                 }
             }
-        }
 
-        # Insert user document
-        db.users.insert_one(user_data)
+            # Insert user document
+            db.users.insert_one(user_data)
 
-        # Create empty quiz document
-        quiz_data = {
-            "_id": ObjectId(),
-            "user_id": user_data['_id'],
-            "questions": [],
-        }
-
-
-        # quiz_data = {
-        # "_id": ObjectId(),
-        # "user_id": user_data['_id'],
-        # "questions": [
-        #     {
-        #     "difficulty": "easy",
-        #     "category": "linux",
-        #     "text": ["Q1","Q2"],
-        #     "answered_correctly": [True, True],
-        #     "score": 1,
-        #     "rank": 1,
-        #     "time": "12-02-2023 15:30"
-        #     },
-        # ]
-        # }
-
-        # Insert quiz document
-        db.quizzes.insert_one(quiz_data)
+            # Create empty quiz document
+            quiz_data = {
+                "_id": ObjectId(),
+                "user_id": user_data['_id'],
+                "questions": [],
+            }
+            db.quizzes.insert_one(quiz_data)
+            return home(request,n)            
+        else:
+            return HttpResponse("User exists")
     
-    return home(request,n)
+    
 
 
 
@@ -248,8 +231,3 @@ def registering(request):
 
 def home(request,name):
     return render(request, 'home.html',{'name':name})
-
-
-
-
-
