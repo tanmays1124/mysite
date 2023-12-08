@@ -5,7 +5,7 @@
 
 # admin.py
 
-from django.contrib import admin
-from .models import Users
+# from django.contrib import admin
+# from .models import Users
 
-admin.site.register(Users)
+# admin.site.register(Users)
