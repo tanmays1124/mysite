@@ -14,7 +14,6 @@ def login(request):
     return render(request,'login.html')
 
 
-
 # when user tries to login
 def result(request):
     all_instances = Users.objects.all()
@@ -26,26 +25,25 @@ def result(request):
          
 
 
-        from django.db import connections
+        # connection = connections['default']
+        # db = connection.cursor().get_database("website")
+        # collections = db.list_collection_names()
 
-        connection = connections['default']
-        db = connection.cursor().get_database("tanmay")
-        collections = db.list_collection_names()
-
-        print("Collections in my_database:")
-        for collection in collections:
-            print(collection)
+        # print("Collections in my_database:")
+        # for collection in collections:
+        #     print(collection)
 
 
         for i in all_instances:
             if i.email==email and i.password==password:
+                # d = email.objects.all()
                 col = db[email]
                 doc = col.find_one() 
                 data = {
                     'name': i.name,
-                    'score1': doc['score_Linux'][0],
-                    'score2': doc['score_Linux'][1],
-                    'score3': doc['score_Linux'][2]
+                    # 'score1': doc['score_Linux'][0],
+                    # 'score2': doc['score_Linux'][1],
+                    # 'score3': doc['score_Linux'][2]
                 }
                 return render(request, 'home.html',data)
             else:
@@ -81,19 +79,16 @@ def registering(request):
         email = request.POST['email']
         password = request.POST['password']
         cpassword = request.POST['Cpassword']
-
-        new_user = Users(name = name, password = password, email = email)
+        l= [12,34,45]
+        new_user = Users(name = name, password = password, email = email,l = l)
         new_user.save()
         n=name
+
+
     
-    return login(request)
+    return home(request,n)
 
 
 
 def home(request,name):
     return render(request, 'home.html',{'name':name})
-
-
-
-
-
