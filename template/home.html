@@ -3,7 +3,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    {% comment %} <link rel="stylesheet" href="{% static 'home.css' %}"> {% endcomment %}
+    <link rel="stylesheet" type="text/css" href="{% static 'css/home.css' %}">
 
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -13,122 +13,16 @@
 
 <div class="navbar">
     <a class="active" name="profile" href="#home">{{name}}</a>
-    <a href="#about">Dashboard</a>
+    <a href="{% url 'dashboard' %}">Dashboard</a>
     <a href="#services">Leaderboard</a>
     <a href="#contact">History</a>
 </div>
 
-
-
-
-<style>
-    body {
-        font-family: Arial, sans-serif;
-        margin: 0;
-        padding: 0;
-        background-color: #5345c4cb;
-    }
-    
-    .navbar {
-        background-color: #333;
-        overflow: hidden;
-    }
-    
-    .navbar a {
-        float: left;
-        display: block;
-        color: #f2f2f2;
-        text-align: center;
-        padding: 14px 16px;
-        text-decoration: none;
-    }
-    
-    .navbar a:hover {
-        background-color: #ddd;
-        color: black;
-    }
-    
-    .navbar a.active {
-        background-color: #4CAF50;
-        color: white;
-    }
-    
-    .container{
-        width: 90%;
-        /* border: solid 2px orange; */
-        display: flex;
-        justify-content: center;
-        padding: 4%;
-        
-    }
-    
-    .card{
-        /* border: solid 0px rgb(2, 2, 2); */
-        display: flex;
-        flex-direction: column;
-        width:80%;
-        border-radius: 20px;
-        padding: 12px;
-        transition: all 300ms ease-in-out;
-        background-color: #ffffff; 
-        box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.3);
-    }
-    
-    
-    
-    
-    
-    
-    .topic{
-        /* border: solid 2px pink; */
-        display: flex;
-        justify-content: center;
-    }
-    .desc{
-        /* border: solid 2px pink; */
-        display: flex;
-        justify-content: center;
-    }
-    .difficulty{
-        /* border: solid 2px pink; */
-        display: flex;
-        flex-direction: row;
-        justify-content: space-around;
-    }
-    
-    .scores{
-        display: flex;
-        flex-direction: row;
-        justify-content: space-around;
-    }
-    
-    
-    .card:hover{
-        /* width:82%;
-        font-size: 20px; */
-        transform: scale(1.1);
-    }
-    
-    
-    
-    @media screen and (max-width: 600px) {
-        .navbar a {
-            float: none;
-            width: 100%;
-            text-align: left;
-        }
-    }
-</style>
-
-
-
-
-
+<div class="page">
 <div class="container">
     <div class="card">
-        <div class="topic">
-                Linux
-        </div>
+        <div class="card-face back">
+        
         <div class="desc">Description: try linux quiz</div>
         <div class="difficulty">
             <div class="level">Easy</div>
@@ -143,62 +37,78 @@
             <div class='score'>{{score3}}</div>
         </div>
 
-
-
     </div>
-    <div class="card-face back">
-        Back
+    <div class="card-face front">
+        <div class="topic">
+            Linux
+    </div>
       </div>
-</div>
 
-
-
-<div class="container">
-    <div class="card">
-        <div class="topic">
-                SQL
-        </div>
-        <div class="desc">Description: try linux quiz</div>
-        <div class="difficulty">
-            <div class="level">Easy</div>
-            <div class="level">Medium</div>
-            <div class="level">Difficult</div>
-        </div>
     </div>
+    
 </div>
-
 
 
 
 
 <div class="container">
     <div class="card">
-        <div class="topic">
-                NoSQL
-        </div>
+        <div class="card-face back">
+        
         <div class="desc">Description: try linux quiz</div>
         <div class="difficulty">
             <div class="level">Easy</div>
             <div class="level">Medium</div>
             <div class="level">Difficult</div>
         </div>
+
+        
+        <div class='scores'>
+            <div class='score'>{{score1}}</div>
+            <div class='score'>{{score2}}</div>
+            <div class='score'>{{score3}}</div>
+        </div>
+
     </div>
+    <div class="card-face front">
+        <div class="topic">
+            SQL
+    </div>
+      </div>
+
+    </div>
+    
 </div>
 
 
 
+<div class="container">
+    <div class="card">
+        <div class="card-face back">
+        
+        <div class="desc">Description: try linux quiz</div>
+        <div class="difficulty">
+            <div class="level">Easy</div>
+            <div class="level">Medium</div>
+            <div class="level">Difficult</div>
+        </div>
 
+        
+        <div class='scores'>
+            <div class='score'>{{score1}}</div>
+            <div class='score'>{{score2}}</div>
+            <div class='score'>{{score3}}</div>
+        </div>
 
+    </div>
+    <div class="card-face front">
+        <div class="topic">
+            NoSQL
+    </div>
+      </div>
 
-
-{% comment %} <form action="change" method='POST'>
-    {% csrf_token %}
-    <input type="submit" id="btn" name="btn_chng" value="update name">
-</form> {% endcomment %}
-
-
-
-
-
+    </div>
+</div>
+</div>
 </body>
 </html>

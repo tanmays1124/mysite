@@ -48,19 +48,12 @@ def result(request):
             
         return HttpResponse('<h1> user does not exists</h1>')
 
-
-
 def res(request):
     return render(request, 'result.html')
-
-
 
 # user registration
 def register(request):
     return render(request,'register.html')
-
-
-
 
 
 from pymongo import MongoClient
@@ -146,88 +139,9 @@ def registering(request):
             return home(request,n)            
         else:
             return HttpResponse("User exists")
-    
-    
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-# # when user successfully registered in
-# def registering(request):
-#     n=''
-#     if request.method=='POST':
-#         name = request.POST['name']
-#         email = request.POST['email']
-#         password = request.POST['password']
-#         cpassword = request.POST['Cpassword']
-
-#         ranks = "Not Ranked"
-
-#         data = {
-#             "_id": ObjectId(),
-#             "name": name,
-#             "email": email,
-#             "password": password,
-#             "questions":{
-#                 "easy": {
-#                     "linux":{
-#                         "q_text": [],
-#                         "correct": [],
-#                         "time": [],
-#                         "score": [],
-#                         "rank": ranks
-#                     }
-#                 },
-#                 "medium": {
-#                     "linux":{
-#                         "q_text": [],
-#                         "correct": [],
-#                         "time": [],
-#                         "score": [],
-#                         "rank": ranks
-#                     }
-#                 },
-#                 "hard": {
-#                     "linux":{
-#                         "q_text": [],
-#                         "correct": [],
-#                         "time": [],
-#                         "score": [],
-#                         "rank": ranks
-#                     }
-#                 }
-#             }
-#         }
-
-#         db = pymongo.MongoClient()["quiz"]
-#         db.site1_users.insert_one(data)
-
-#         # new_user = Users(name = name, password = password, email = email)
-#         # new_user.save()
-
-#         n=name
-    
-#     return home(request,n)
-
-
-
-
 
 def home(request,name):
     return render(request, 'home.html',{'name':name})
+
+def dashboard(request):
+    return render(request,'dashboard.html')
