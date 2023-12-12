@@ -1,13 +1,15 @@
 from django.shortcuts import render,redirect
 from django.http import HttpResponse
-# from .models import Users
-# from django.db import models
-# from djongo import database
-# from django.db import connections
-import pymongo
 from bson.objectid import ObjectId
-# db = database.MongoClient().tanmay
-# Create your views here.
+from pymongo import MongoClient
+# from django.utils import simplejson
+
+# Connect to MongoDB
+client = MongoClient()
+db = client['quiz']
+
+
+
 
 # Login 
 def login(request):
@@ -20,13 +22,6 @@ def result(request):
     if request.method=='POST':
         password = request.POST['password']
         uname = request.POST['uname']
-        
-        
-        
-        client = MongoClient()
-
-        db = client['quiz']
-        
 
 
         user_data = db.users.find_one({'username':uname})
@@ -56,7 +51,6 @@ def register(request):
     return render(request,'register.html')
 
 
-from pymongo import MongoClient
 
 def registering(request):
     n=''
@@ -67,13 +61,11 @@ def registering(request):
         password = request.POST['password']
         uname = request.POST['username']
 
-        # Connect to MongoDB
-        client = MongoClient()
-        db = client['quiz']
 
-        username = db.users.find({'username':uname})
 
-        if username is None:
+        username = db.user.find({'username':uname}).count()
+        print(username)
+        if username == 0:
             
             n=name
             # Build user document
@@ -133,7 +125,18 @@ def registering(request):
             quiz_data = {
                 "_id": ObjectId(),
                 "user_id": user_data['_id'],
-                "questions": [],
+                "questions": {
+                    'easy':
+                    {
+                        'linux':
+                        {
+                            'q_txt': [],
+                            'answered_correctly': [],
+                            'time': ['2:30','3:00','5:20'],
+                            'score':[23,45,12]
+                        }
+                    }
+                },
             }
             db.quizzes.insert_one(quiz_data)
             return home(request,n)            
@@ -142,6 +145,20 @@ def registering(request):
 
 def home(request,name):
     return render(request, 'home.html',{'name':name})
-
+import json
 def dashboard(request):
-    return render(request,'dashboard.html')
+    user_id = db.users.find_one({'username':'tanmays1124'},{'_id':1})
+    print(str(user_id['_id']))
+
+    score = db.quizzes.aggregate([{
+        '$match':{'user_id': ObjectId(user_id['_id'])}
+        },{
+            '$project' :{'questions.easy.linux.score':1,'_id': 0}
+        }
+    ])
+    list=0
+    for sc in score:
+        list=sc['questions']['easy']['linux']['score']
+
+
+    return render(request,'dashboard.html',{'data':list})

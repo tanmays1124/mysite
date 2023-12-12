@@ -1,7 +1,6 @@
+{% load static %}
+
 <html>
-
-
-
 <style>
 .chart{
     width: 300px;
@@ -11,20 +10,21 @@
 
 <div class="chart">
     <canvas id="myChart"></canvas>
+    {{data}}
   </div>
   
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   
   <script>
-    const ctx = document.getElementById('myChart');
-  
+    const ctx = document.getElementById('myChart'); 
+    
     new Chart(ctx, {
-      type: 'bar',
+      type: 'line',
       data: {
-        labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
+        labels: ['Red', 'Blue', 'Yellow'],
         datasets: [{
           label: 'No of Votes',
-          data: [1, 19, 3, 5, 2, 3],
+          data: JSON.parse('{{data}}'),
           borderWidth: 1
         }]
       },
@@ -36,6 +36,7 @@
         }
       }
     });
+    
   </script>
 
 </html>

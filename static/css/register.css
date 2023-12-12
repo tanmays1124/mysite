@@ -9,7 +9,7 @@ body {
 }
 
 .registration-container {
-    background-color: #530303;
+    background-color: #555468a4;
     padding: 20px;
     border-radius: 8px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
@@ -41,5 +41,5 @@ body {
 }
 
 .registration-form button:hover {
-    background-color: #45a049;
+    background-color: #001b01;
 }
