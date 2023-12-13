@@ -150,15 +150,49 @@ def dashboard(request):
     user_id = db.users.find_one({'username':'tanmays1124'},{'_id':1})
     print(str(user_id['_id']))
 
-    score = db.quizzes.aggregate([{
+    data = db.quizzes.aggregate([{
         '$match':{'user_id': ObjectId(user_id['_id'])}
         },{
-            '$project' :{'questions.easy.linux.score':1,'_id': 0}
+            '$project' :{'questions.easy.linux.score':1,'questions.easy.linux.time':1,'_id': 0}
         }
     ])
-    list=0
-    for sc in score:
-        list=sc['questions']['easy']['linux']['score']
+    list1=0
+    list2=0
+    for sc in data:
+        list1=sc['questions']['easy']['linux']['score']
+        list2=sc['questions']['easy']['linux']['time']
+    print(list(list2))
+    
+
+    return render(request,'dashboard.html',{'scores':list1,'time':list2})
 
 
-    return render(request,'dashboard.html',{'data':list})
+
+import requests
+from django.http import JsonResponse
+from django.views import View
+
+
+def appview(request):
+    # Set the parameters for the API 
+    api_url = 'https://quizapi.io/api/v1/questions'
+    apiKey = 'EvJrmL7hr1UcZBglIp9zd6nXhLb1rXl2fRUnrfvg'
+    params={
+        'apiKey':apiKey,
+        'category' : 'linux',
+        'difficulty':'Medium',
+        'limit':10
+        }
+        # Make the API request
+    response = requests.get(api_url,params=params)
+
+        # Check if the request was successful (status code 200)
+    # if response.status_code == 200:
+            # Parse the JSON data from the API response
+    data = response.json()
+            # return JsonResponse(data, safe=False)
+    print(data)
+    return HttpResponse('got it')
+    # else:
+    #         # Return an error response if the API request failed
+    # return JsonResponse({'error': 'Failed to fetch data from API'}, status=response.status_code)
