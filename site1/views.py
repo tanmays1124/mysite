@@ -2,6 +2,8 @@ from django.shortcuts import render,redirect
 from django.http import HttpResponse
 from bson.objectid import ObjectId
 from pymongo import MongoClient
+from django.contrib.auth.models import User
+from django.contrib.auth import authenticate, login, logout
 # from django.utils import simplejson
 
 # Connect to MongoDB
@@ -60,6 +62,9 @@ def registering(request):
         email = request.POST['email']
         password = request.POST['password']
         uname = request.POST['username']
+
+        # myuser = User.objects.create_user(uname, email, password)
+        # myuser.save()
 
 
 
@@ -183,16 +188,31 @@ def appview(request):
         'difficulty':'Medium',
         'limit':10
         }
-        # Make the API request
-    response = requests.get(api_url,params=params)
 
-        # Check if the request was successful (status code 200)
-    # if response.status_code == 200:
-            # Parse the JSON data from the API response
-    data = response.json()
-            # return JsonResponse(data, safe=False)
+        # Make the API request
+    response = requests.get('https://quizapi.io/api/v1/questions?apiKey=EvJrmL7hr1UcZBglIp9zd6nXhLb1rXl2fRUnrfvg').json()
+    
+
+    data = response
     print(data)
     return HttpResponse('got it')
-    # else:
-    #         # Return an error response if the API request failed
-    # return JsonResponse({'error': 'Failed to fetch data from API'}, status=response.status_code)
+
+
+def easy(request):
+    data = db.questions.find({"difficulty":"easy"})
+    questions = []
+    options = []
+    for i in data:
+        questions.append(i["question"])
+        option = []
+        option.append(i["options"][0]["a"])
+        option.append(i["options"][1]["b"])
+        option.append(i["options"][2]["c"])
+        option.append(i["options"][3]["d"])
+        options.append(option)
+    print(questions)
+    print(options)
+
+    
+        
+    return render(request,'quiz.html',{'questions':questions[0],'options':options[0]})

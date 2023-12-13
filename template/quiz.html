@@ -1,0 +1,42 @@
+{% load static %}
+
+<html>
+    <head>
+        Quiz page
+    </head>
+
+
+    <body>
+        <div for="question" class="question"> 
+            {{questions}}
+        </div>
+        <div class="options">
+            <span id="option-a">optionA</span>
+            <span id="option-b">optionB</span>
+            <span id="option-c">optionC</span>
+            <span id="option-d">optionD</span>
+        </div>
+    </body>
+
+
+    <script>
+        let opt = {{ options|safe }};
+
+        let option_a = document.getElementById("option-a");
+        let option_b = document.getElementById("option-b");
+        let option_d = document.getElementById("option-d");
+        let option_c = document.getElementById("option-c");
+
+        /*console.log(opt[0]);
+        console.log(opt[1]);
+        console.log(opt[2]);
+        console.log(opt[3]); */
+        
+        option_a.innerHTML = opt[0];
+        option_b.innerHTML = opt[1];
+        option_c.innerHTML = opt[2];
+        option_d.innerHTML = opt[3];
+
+
+    </script>
+    </html>
