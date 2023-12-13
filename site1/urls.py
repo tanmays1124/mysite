@@ -19,10 +19,10 @@ from django.urls import path
 from . import views
 
 urlpatterns = [
-    path('',views.login,name='login'),
+    path('',views.user_login,name='user_login'),
     path('register',views.register,name='register'),
-    path('registering',views.registering, name='registering'),
-    path('logging',views.result,name='result'),
+    # path('register',views.registering, name='registering'),
+    # path('logging',views.result,name='result'),
     path('admin/', admin.site.urls),
     path('dashboard',views.dashboard,name='dashboard'),
     # path('',views.appview,name='QuizApiView')

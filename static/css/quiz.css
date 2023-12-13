@@ -1,0 +1,15 @@
+.options{
+display: flex;
+justify-content: center;
+}
+.option{
+
+    border: solid 2px red;
+}
+
+.option:hover {
+    cursor: pointer;
+    transform: scale(1.2);
+    transition: transform 0.2s ease-in-out;
+  }
+  

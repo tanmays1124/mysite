@@ -2,7 +2,8 @@
 
 <html>
     <head>
-        Quiz page
+        <link rel="stylesheet" type="text/css" href="{% static 'css/quiz.css' %}">
+        <title>Quiz Page</title>
     </head>
 
 
@@ -11,31 +12,41 @@
             {{questions}}
         </div>
         <div class="options">
-            <span id="option-a">optionA</span>
-            <span id="option-b">optionB</span>
-            <span id="option-c">optionC</span>
-            <span id="option-d">optionD</span>
+            <span id="option-a" class="option" onclick = "choice(this)">optiona</span>
+            <span id="option-b" class="option" onclick = "choice(this)">optionb</span>
+            <span id="option-c" class="option" onclick = "choice(this)">optionc</span>
+            <span id="option-d" class="option" onclick = "choice(this)">optiond</span>
         </div>
+        <div id="result">choose correct option</div>
     </body>
 
 
     <script>
         let opt = {{ options|safe }};
-
+        let answer = "{{ answers }}"
         let option_a = document.getElementById("option-a");
         let option_b = document.getElementById("option-b");
         let option_d = document.getElementById("option-d");
         let option_c = document.getElementById("option-c");
 
-        /*console.log(opt[0]);
+        console.log(opt[0]);
         console.log(opt[1]);
         console.log(opt[2]);
-        console.log(opt[3]); */
+        console.log(opt[3]); 
         
         option_a.innerHTML = opt[0];
         option_b.innerHTML = opt[1];
         option_c.innerHTML = opt[2];
         option_d.innerHTML = opt[3];
+
+        function choice(element){
+            if(element.innerText===answer){
+                document.getElementById("result").innerText = "correct answer";
+            }
+            else{
+                document.getElementById("result").innerText = "wrong answer";
+            }
+        } 
 
 
     </script>

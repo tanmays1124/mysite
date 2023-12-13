@@ -4,6 +4,9 @@ from bson.objectid import ObjectId
 from pymongo import MongoClient
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
+from django.views.decorators.csrf import csrf_protect
+import requests
+
 # from django.utils import simplejson
 
 # Connect to MongoDB
@@ -14,69 +17,71 @@ db = client['quiz']
 
 
 # Login 
-def login(request):
-    return render(request,'login.html')
 
 
 # when user tries to login
-def result(request):
-    f=0
+@csrf_protect
+def user_login(request):
     if request.method=='POST':
         password = request.POST['password']
         uname = request.POST['uname']
 
+        user = authenticate(username=uname, password=password)
 
-        user_data = db.users.find_one({'username':uname})
-        print(user_data)
-
-        if user_data:
-
-            if user_data['password'] == password:
-                data = {
-                    'name': user_data['name'],
-                    'score1': user_data['ranks']['easy']['linux'],
-                    'score2': user_data['ranks']['medium']['linux'],
-                    'score3': user_data['ranks']['difficult']['linux'],
-                }
-                return render(request, 'home.html',data)               
-
-            else:
-                return render(request,"wrong password")
+        if user is not None:
+            login(request, user)
+            name = user.first_name
             
-        return HttpResponse('<h1> user does not exists</h1>')
 
-def res(request):
-    return render(request, 'result.html')
+            user_data = db.users.find_one({'username':uname})
+
+            data = {
+                        'name': name,
+                        'score1': user_data['ranks']['easy']['linux'],
+                        'score2': user_data['ranks']['medium']['linux'],
+                        'score3': user_data['ranks']['difficult']['linux'],
+                    }
+            return render(request, 'home.html',data) 
+             
+
+        else:
+            return HttpResponse("<h1>wrong credentials!<h1>")
+    else:
+        return render(request,'login.html')
+            
+
+
 
 # user registration
+@csrf_protect
 def register(request):
-    return render(request,'register.html')
-
-
-
-def registering(request):
     n=''
     if request.method == 'POST':
         # Extract user information from the request
-        name = request.POST['name']
+        fname = request.POST['fname']
+        lname = request.POST['lname']
         email = request.POST['email']
         password = request.POST['password']
         uname = request.POST['username']
 
-        # myuser = User.objects.create_user(uname, email, password)
+        # myuser = User.objects.create_user(username = uname, email = email, password = password,fname = fname,lname = lname)
         # myuser.save()
 
 
 
-        username = db.user.find({'username':uname}).count()
+        username = db.users.find({'username':uname}).count()
         print(username)
         if username == 0:
+            myuser = User.objects.create_user(username = uname, email = email, password = password,first_name = fname,last_name = lname)
+            myuser.save()
             
-            n=name
+            fn=fname
+            ln=lname
             # Build user document
             user_data = {
                 "_id": ObjectId(),
-                "name": name,
+                "fname": fn,
+                "lname": ln,
                 "username": uname,
                 "email": email,
                 "password": password,
@@ -144,13 +149,18 @@ def registering(request):
                 },
             }
             db.quizzes.insert_one(quiz_data)
-            return home(request,n)            
+            return redirect('user_login')            
         else:
             return HttpResponse("User exists")
+    else:
+        return render(request,'register.html')
+    
 
-def home(request,name):
-    return render(request, 'home.html',{'name':name})
-import json
+
+def home(request,fname,lname):
+    return render(request, 'home.html',{'fname':fname,'lname':lname})
+
+
 def dashboard(request):
     user_id = db.users.find_one({'username':'tanmays1124'},{'_id':1})
     print(str(user_id['_id']))
@@ -173,35 +183,35 @@ def dashboard(request):
 
 
 
-import requests
-from django.http import JsonResponse
-from django.views import View
 
 
-def appview(request):
-    # Set the parameters for the API 
-    api_url = 'https://quizapi.io/api/v1/questions'
-    apiKey = 'EvJrmL7hr1UcZBglIp9zd6nXhLb1rXl2fRUnrfvg'
-    params={
-        'apiKey':apiKey,
-        'category' : 'linux',
-        'difficulty':'Medium',
-        'limit':10
-        }
 
-        # Make the API request
-    response = requests.get('https://quizapi.io/api/v1/questions?apiKey=EvJrmL7hr1UcZBglIp9zd6nXhLb1rXl2fRUnrfvg').json()
+# def appview(request):
+#     # Set the parameters for the API 
+#     api_url = 'https://quizapi.io/api/v1/questions'
+#     apiKey = 'EvJrmL7hr1UcZBglIp9zd6nXhLb1rXl2fRUnrfvg'
+#     params={
+#         'apiKey':apiKey,
+#         'category' : 'linux',
+#         'difficulty':'Medium',
+#         'limit':10
+#         }
+
+#         # Make the API request
+#     response = requests.get('https://quizapi.io/api/v1/questions?apiKey=EvJrmL7hr1UcZBglIp9zd6nXhLb1rXl2fRUnrfvg').json()
     
 
-    data = response
-    print(data)
-    return HttpResponse('got it')
+#     data = response
+#     print(data)
+#     return HttpResponse('got it')
+
 
 
 def easy(request):
     data = db.questions.find({"difficulty":"easy"})
     questions = []
     options = []
+    answers =[]
     for i in data:
         questions.append(i["question"])
         option = []
@@ -210,9 +220,26 @@ def easy(request):
         option.append(i["options"][2]["c"])
         option.append(i["options"][3]["d"])
         options.append(option)
+        corr = i["answer"]
+        index = 0
+        if corr == "a":
+            index = 0
+        elif corr == "b":
+            index = 1
+        elif corr == "c":
+            index = 2
+        else:
+            index = 3
+        answers.append(i["options"][index][corr])
     print(questions)
     print(options)
 
+    data = {
+            "answers": answers[0],
+            "options": options[0],
+            "questions": questions[0]
+            }
+
     
         
-    return render(request,'quiz.html',{'questions':questions[0],'options':options[0]})
+    return render(request,'quiz.html', data)
