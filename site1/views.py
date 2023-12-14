@@ -250,4 +250,7 @@ def difficult(request):
     return render(request,'quiz.html',data)
 
 
+def logout_view(request):
+    logout(request)
+    return redirect(user_login)
 
