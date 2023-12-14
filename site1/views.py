@@ -67,29 +67,32 @@ def register(request):
 
 
             user_exists = User.objects.filter(username=uname).first() or User.objects.filter(email=email).exists()
+
+
+
         
             if user_exists:
                 messages.error(request, 'That username or email already exists')
                 return redirect('register')
 
             else:
-                hashed_password = make_password(password)
-                User.objects.create(
-                email=email,
-                username=uname,
-                password=hashed_password,
-                first_name = fname,
-                last_name = lname
-                )
 
-                UserQuiz.objects.create(username=uname,quiz_easy=[],quiz_medium=[],quiz_hard=[])
-                
+                if len(password) < 8:
+                     messages.error(request, 'Password length should be greater than 8')
+                     return redirect('register')
+                else:
+                    hashed_password = make_password(password)
+                    User.objects.create(
+                    email=email,
+                    username=uname,
+                    password=hashed_password,
+                    first_name = fname,
+                    last_name = lname
+                    )
 
-
-
-
-
-                return redirect('user_login')            
+                    UserQuiz.objects.create(username=uname,quiz_easy=[],quiz_medium=[],quiz_hard=[])
+                    
+                    return redirect('user_login')            
             
         else:
             return render(request,'register.html')
@@ -151,38 +154,100 @@ def dashboard(request):
 
 
 def easy(request):
-    data = db.questions.find({"difficulty":"easy"})
+    data = db.questions.find({"category":"Linux","difficulty":"easy"})
     questions = []
     options = []
     answers =[]
     for i in data:
         questions.append(i["question"])
         option = []
-        option.append(i["options"][0]["a"])
-        option.append(i["options"][1]["b"])
-        option.append(i["options"][2]["c"])
-        option.append(i["options"][3]["d"])
+        option.append(i["options"][0])
+        option.append(i["options"][1])
+        option.append(i["options"][2])
+        option.append(i["options"][3])
         options.append(option)
         corr = i["answer"]
-        index = 0
-        if corr == "a":
-            index = 0
-        elif corr == "b":
-            index = 1
-        elif corr == "c":
-            index = 2
-        else:
-            index = 3
-        answers.append(i["options"][index][corr])
+        answers.append(i["options"][corr])
+        
     print(questions)
     print(options)
 
     data = {
-            "answers": answers[0],
-            "options": options[0],
-            "questions": questions[0]
+            "answers": answers,
+            "options": options,
+            "questions": questions
             }
 
     
         
-    return render(request,'quiz.html', data)
+    return render(request,'quiz.html',data)
+
+
+
+
+
+def medium(request):
+    data = db.questions.find({"category":"Linux","difficulty":"medium"})
+    questions = []
+    options = []
+    answers =[]
+    for i in data:
+        questions.append(i["question"])
+        option = []
+        option.append(i["options"][0])
+        option.append(i["options"][1])
+        option.append(i["options"][2])
+        option.append(i["options"][3])
+        options.append(option)
+        corr = i["answer"]
+        answers.append(i["options"][corr])
+        
+    print(questions)
+    print(options)
+
+    data = {
+            "answers": answers,
+            "options": options,
+            "questions": questions
+            }
+
+    
+        
+    return render(request,'quiz.html',data)
+
+
+
+
+
+
+def difficult(request):
+    data = db.questions.find({"category":"Linux","difficulty":"difficult"})
+    questions = []
+    options = []
+    answers =[]
+    for i in data:
+        questions.append(i["question"])
+        option = []
+        option.append(i["options"][0])
+        option.append(i["options"][1])
+        option.append(i["options"][2])
+        option.append(i["options"][3])
+        options.append(option)
+        corr = i["answer"]
+        answers.append(i["options"][corr])
+        
+    print(questions)
+    print(options)
+
+    data = {
+            "answers": answers,
+            "options": options,
+            "questions": questions
+            }
+
+    
+        
+    return render(request,'quiz.html',data)
+
+
+

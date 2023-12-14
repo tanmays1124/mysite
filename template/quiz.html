@@ -6,47 +6,104 @@
         <title>Quiz Page</title>
     </head>
 
-
+<style>
+    #question{
+        font-size: 40px;
+    }
+    #options{
+        display: flex;
+        justify-content: center;
+        }
+        .option{
+            width:200px;
+            height: 50px;
+            font-size: 30px;
+            text-align: center;
+            border: solid 2px rgb(175, 150, 150);
+        }
+        
+        .option:hover {
+            cursor: pointer;
+            transform: scale(1.2);
+            transition: transform 0.2s ease-in-out;
+          }
+          .result{
+            font-size:50px;
+          }
+          
+</style>
     <body>
-        <div for="question" class="question"> 
-            {{questions}}
+        <div for="question" id="question"> 
+            question
         </div>
-        <div class="options">
+        <div id="options">
             <span id="option-a" class="option" onclick = "choice(this)">optiona</span>
             <span id="option-b" class="option" onclick = "choice(this)">optionb</span>
             <span id="option-c" class="option" onclick = "choice(this)">optionc</span>
             <span id="option-d" class="option" onclick = "choice(this)">optiond</span>
         </div>
-        <div id="result">choose correct option</div>
+        
     </body>
 
 
     <script>
+        let questions = {{ questions|safe }}
         let opt = {{ options|safe }};
-        let answer = "{{ answers }}"
+        let answer = {{ answers|safe }}
+
+        let length_of_q = questions.length;
+
+        let score = 0
+
+        curr_ques = 0
         let option_a = document.getElementById("option-a");
         let option_b = document.getElementById("option-b");
         let option_d = document.getElementById("option-d");
         let option_c = document.getElementById("option-c");
+        let question = document.getElementById("question");
 
-        console.log(opt[0]);
-        console.log(opt[1]);
-        console.log(opt[2]);
-        console.log(opt[3]); 
-        
-        option_a.innerHTML = opt[0];
-        option_b.innerHTML = opt[1];
-        option_c.innerHTML = opt[2];
-        option_d.innerHTML = opt[3];
+        question.textContent = questions[curr_ques];
+        option_a.innerHTML = opt[curr_ques][0];
+        option_b.innerHTML = opt[curr_ques][1];
+        option_c.innerHTML = opt[curr_ques][2];
+        option_d.innerHTML = opt[curr_ques][3];
+
+        function updateQuestion(){
+            question.textContent = questions[curr_ques];
+            option_a.innerHTML = opt[curr_ques][0];
+            option_b.innerHTML = opt[curr_ques][1];
+            option_c.innerHTML = opt[curr_ques][2];
+            option_d.innerHTML = opt[curr_ques][3];
+        }
 
         function choice(element){
-            if(element.innerText===answer){
-                document.getElementById("result").innerText = "correct answer";
+
+            if(element.innerText===answer[curr_ques]){
+         
+                score+=1
+                console.log("correct answer");
             }
             else{
-                document.getElementById("result").innerText = "wrong answer";
+                
+                console.log("incorrect answer");
             }
-        } 
+
+            curr_ques+=1
+            if(length_of_q!==curr_ques){
+            updateQuestion();
+            }
+            else{
+                tag = "<span class='result'>your score is " + score + "</span>"
+                document.getElementById('options').innerHTML = tag;
+                document.getElementById('question').innerHTML = "";
+
+            }
+        }
+        
+
+
+
+
 
 
     </script>

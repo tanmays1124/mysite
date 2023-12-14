@@ -1,15 +1,15 @@
-.options{
-display: flex;
-justify-content: center;
-}
-.option{
-
-    border: solid 2px red;
-}
-
-.option:hover {
-    cursor: pointer;
-    transform: scale(1.2);
-    transition: transform 0.2s ease-in-out;
-  }
-  
+#options{
+    display: flex;
+    justify-content: center;
+    }
+    .option{
+        width:200px;
+        border: solid 2px rgb(175, 150, 150);
+    }
+    
+    .option:hover {
+        cursor: pointer;
+        transform: scale(1.2);
+        transition: transform 0.2s ease-in-out;
+      }
+      

@@ -27,4 +27,6 @@ urlpatterns = [
     path('dashboard',views.dashboard,name='dashboard'),
     # path('',views.appview,name='QuizApiView')
     path('easy',views.easy,name='easy'),
+    path('medium',views.medium,name='medium'),
+    path('difficult',views.difficult,name='difficult'),
 ]
