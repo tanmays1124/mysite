@@ -1,40 +1,44 @@
-# from django.db import models
-# from django.contrib.auth import get_user_model 
-# from django.db.models.signals import post_save
-# from djongo import database
-# from django.dispatch import receiver
+from djongo import models
 
-# # Create your models here.
+class Questions(models.Model):
+    id = models.ObjectIdField(primary_key=True) 
+    str = models.CharField(max_length = 500)
 
-# class Users(models.Model):
-#     name = models.CharField( max_length=50,null=False,blank=False)
-#     password = models.CharField( max_length=50,null=False,blank=False)
-#     email = models.CharField(max_length=50,null=False,blank=False)
-#     # id = models.ObjectIdField(primary_key=True)
+
+
+class User(models.Model):
+    first_name = models.CharField(max_length=100)
+    last_name = models.CharField(max_length=100)
+    email = models.EmailField(unique=True)
+    username = models.CharField(max_length=100, unique=True, default='default_username')
+    password = models.CharField(max_length=100)
+    reset_password_token = models.CharField(max_length=32, blank=True, null=True)
+
+    def __str__(self):
+        return self.username
     
-#     def __str__(self):
-#         return f'{self.name} , {self.password}'
+class QuizAttempt(models.Model):
+   score = models.IntegerField()
+   time = models.DateTimeField()
+   questions = models.ArrayField(model_container=Questions)
+   answers = models.ArrayField(model_container=Questions)
+   
+   class Meta:
+     abstract = True
 
 
 
-# @receiver(post_save, sender=Users)
-# def create_user_collection(sender, instance, created, **kwargs):
-#     if created:  
-#         db = database.MongoClient().tanmay 
-#         collection = db.create_collection(instance.email)
 
+class UserQuiz(models.Model):
+    username = models.CharField(max_length = 100,null=True,blank=True)
 
-
-# @receiver(post_save, sender=Users) 
-# def create_user_collection(sender, instance, created, **kwargs):
-#     if created:
-#         db = mongoengine.connect(db='tanmay', host='localhost', port=27017)
-#         mongo_client = db.client
-#         mongo_db = mongo_client['tanmay']
-
-# # Create collection
-#         collection = mongo_db.create_collection('test_coll') 
-#         print(collection)
-# papa meri jaan 
-
+    quiz_easy = models.ArrayField(
+      model_container=QuizAttempt
+   )
+    quiz_medium = models.ArrayField(
+      model_container=QuizAttempt
+   ) 
+    quiz_hard = models.ArrayField(
+      model_container=QuizAttempt
+   )
 

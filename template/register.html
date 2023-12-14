@@ -8,10 +8,34 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Registration Page</title>
     <link rel="stylesheet" type="text/css" href="{% static 'css/register.css' %}">
-
+    <style>
+        .messages{
+            color: red;
+            display: block;
+            position: absolute;
+            top: 0;
+            width: 400px;
+            height: 100px;
+            }
+    </style>
 </head>
-<body>
 
+
+{% if messages %}
+
+<div class="messages">
+    {% for message in messages %}
+    {% if message.tags == "error" %}
+    User already exists
+    {% endif %}
+    {% endfor %}
+</div>
+
+{% endif %}
+
+
+<body>
+   
 <div class="registration-container">
     <h2>Registration</h2>
     <form  class="registration-form" action="register" method='POST'>

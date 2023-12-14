@@ -1,3 +1,4 @@
+# from pyexpat.errors import messages
 from django.shortcuts import render,redirect
 from django.http import HttpResponse
 from bson.objectid import ObjectId
@@ -6,6 +7,10 @@ from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
 from django.views.decorators.csrf import csrf_protect
 import requests
+from django.contrib.auth.hashers import make_password
+from django.contrib import messages
+from .models import UserQuiz 
+from django.template.context_processors import csrf
 
 # from django.utils import simplejson
 
@@ -29,19 +34,14 @@ def user_login(request):
         user = authenticate(username=uname, password=password)
 
         if user is not None:
-            login(request, user)
+            c = {}
+            c.update(csrf(request))
+            # login(request, user)
             name = user.first_name
+            # print(name)
+
             
-
-            user_data = db.users.find_one({'username':uname})
-
-            data = {
-                        'name': name,
-                        'score1': user_data['ranks']['easy']['linux'],
-                        'score2': user_data['ranks']['medium']['linux'],
-                        'score3': user_data['ranks']['difficult']['linux'],
-                    }
-            return render(request, 'home.html',data) 
+            return render(request, 'home.html',{'name':name}) 
              
 
         else:
@@ -55,105 +55,48 @@ def user_login(request):
 # user registration
 @csrf_protect
 def register(request):
-    n=''
-    if request.method == 'POST':
-        # Extract user information from the request
-        fname = request.POST['fname']
-        lname = request.POST['lname']
-        email = request.POST['email']
-        password = request.POST['password']
-        uname = request.POST['username']
-
-        # myuser = User.objects.create_user(username = uname, email = email, password = password,fname = fname,lname = lname)
-        # myuser.save()
+    try:
+        n=''
+        if request.method == 'POST':
+            # Extract user information from the request
+            fname = request.POST['fname']
+            lname = request.POST['lname']
+            email = request.POST['email']
+            password = request.POST['password']
+            uname = request.POST['username']
 
 
+            user_exists = User.objects.filter(username=uname).first() or User.objects.filter(email=email).exists()
+        
+            if user_exists:
+                messages.error(request, 'That username or email already exists')
+                return redirect('register')
 
-        username = db.users.find({'username':uname}).count()
-        print(username)
-        if username == 0:
-            myuser = User.objects.create_user(username = uname, email = email, password = password,first_name = fname,last_name = lname)
-            myuser.save()
+            else:
+                hashed_password = make_password(password)
+                User.objects.create(
+                email=email,
+                username=uname,
+                password=hashed_password,
+                first_name = fname,
+                last_name = lname
+                )
+
+                UserQuiz.objects.create(username=uname,quiz_easy=[],quiz_medium=[],quiz_hard=[])
+                
+
+
+
+
+
+                return redirect('user_login')            
             
-            fn=fname
-            ln=lname
-            # Build user document
-            user_data = {
-                "_id": ObjectId(),
-                "fname": fn,
-                "lname": ln,
-                "username": uname,
-                "email": email,
-                "password": password,
-                "quiz_id": ObjectId(),
-                "scores": {
-                    "easy":
-                    {
-                        "linux": 0,
-                        "sql": 0,
-                        "nosql": 0
-                    },
-                    "medium":
-                    {
-                        "linux": 0,
-                        "sql": 0,
-                        "nosql": 0
-                    },
-                    "difficult":
-                    {
-                        "linux": 0,
-                        "sql": 0,
-                        "nosql": 0
-                    }
-                },
-                "ranks": {
-                    "easy":
-                    {
-                        "linux": "Not Ranked",
-                        "sql": "Not Ranked",
-                        "nosql": "Not Ranked"
-                    },
-                    "medium":
-                    {
-                        "linux": "Not Ranked",
-                        "sql": "Not Ranked",
-                        "nosql": "Not Ranked"
-                    },
-                    "difficult":
-                    {
-                        "linux": "Not Ranked",
-                        "sql": "Not Ranked",
-                        "nosql": "Not Ranked"
-                    }
-                }
-            }
-
-            # Insert user document
-            db.users.insert_one(user_data)
-
-            # Create empty quiz document
-            quiz_data = {
-                "_id": ObjectId(),
-                "user_id": user_data['_id'],
-                "questions": {
-                    'easy':
-                    {
-                        'linux':
-                        {
-                            'q_txt': [],
-                            'answered_correctly': [],
-                            'time': ['2:30','3:00','5:20'],
-                            'score':[23,45,12]
-                        }
-                    }
-                },
-            }
-            db.quizzes.insert_one(quiz_data)
-            return redirect('user_login')            
         else:
-            return HttpResponse("User exists")
-    else:
-        return render(request,'register.html')
+            return render(request,'register.html')
+    except Exception as e:
+        print(e)
+        messages.error(request,f"{e}")
+        return HttpResponse("Error")
     
 
 
