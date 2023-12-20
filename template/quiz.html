@@ -4,9 +4,7 @@
     <head>
         <link rel="stylesheet" type="text/css" href="{% static 'css/quiz.css' %}">
         <title>Quiz Page</title>
-    </head>
-
-<style>
+        <style>
     #question{
         font-size: 40px;
     }
@@ -32,6 +30,9 @@
           }
           
 </style>
+    </head>
+
+
     <body>
         <div for="question" id="question"> 
             question
@@ -43,13 +44,15 @@
             <span id="option-d" class="option" onclick = "choice(this)">optiond</span>
         </div>
         
-    </body>
+
 
 
     <script>
         let questions = {{ questions|safe }}
         let opt = {{ options|safe }};
         let answer = {{ answers|safe }}
+        
+
 
         let length_of_q = questions.length;
 
@@ -99,12 +102,7 @@
 
             }
         }
-        
-
-
-
-
-
 
     </script>
+</body>
     </html>

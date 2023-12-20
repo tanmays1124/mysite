@@ -23,11 +23,13 @@ urlpatterns = [
     path('register',views.register,name='register'),
     # path('register',views.registering, name='registering'),
     # path('logging',views.result,name='result'),
-    path('admin/', admin.site.urls),
+    # path('admin/', admin.site.urls),
     path('dashboard',views.dashboard,name='dashboard'),
     # path('',views.appview,name='QuizApiView')
     path('easy',views.easy,name='easy'),
     path('medium',views.medium,name='medium'),
     path('difficult',views.difficult,name='difficult'),
-    path('logout',views.logout_view,name='logout')
+    path('logout',views.logout_view,name='logout'),
+    path('feed',views.feed,name="feed"),
+    path('delete',views.delete_user,name="delete")
 ]

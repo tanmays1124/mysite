@@ -11,6 +11,9 @@ from django.contrib.auth.hashers import make_password
 from django.contrib import messages
 from .models import UserQuiz 
 from django.template.context_processors import csrf
+from django.shortcuts import get_object_or_404
+import json
+from django.template.defaultfilters import safe
 
 # from django.utils import simplejson
 
@@ -39,9 +42,12 @@ def user_login(request):
             # login(request, user)
             name = user.first_name
             # print(name)
+            if user.is_staff == True:
+                return render(request, 'adminpage.html')
+            else:
+                request.session['username'] = uname
 
-            
-            return render(request, 'home.html',{'name':name}) 
+                return render(request, 'home.html',{'name':name}) 
              
 
         else:
@@ -63,7 +69,9 @@ def register(request):
             lname = request.POST['lname']
             email = request.POST['email']
             password = request.POST['password']
+            cpassword = request.POST['Cpassword']
             uname = request.POST['username']
+
 
 
             user_exists = User.objects.filter(username=uname).first() or User.objects.filter(email=email).exists()
@@ -80,17 +88,20 @@ def register(request):
                 if len(password) < 8:
                      messages.error(request, 'Password length should be greater than 8')
                      return redirect('register')
+                elif password!=cpassword:
+                    messages.error(request,"Password doesn't match")
+                    return redirect('register')
                 else:
                     hashed_password = make_password(password)
-                    User.objects.create(
+                    User.objects.create_user(
                     email=email,
                     username=uname,
                     password=hashed_password,
                     first_name = fname,
                     last_name = lname
                     )
-
-                    UserQuiz.objects.create(username=uname,quiz_easy=[],quiz_medium=[],quiz_hard=[])
+                    
+                    UserQuiz.object.create_user(username=uname,quiz_easy=[],quiz_medium=[],quiz_hard=[])
                     
                     return redirect('user_login')            
             
@@ -177,6 +188,13 @@ def easy(request):
             "options": options,
             "questions": questions
             }
+    # data = {
+    #     'questions': ['Question 1', 'Question 2', 'Question 3'],
+    #     'options': [['Option A', 'Option B', 'Option C', 'Option D']] * 3,
+    #     'answers': ['Option A', 'Option B', 'Option C'],
+    # }
+    # encoded_data = json.dumps(data)
+    # return render(request, 'quiz.html', {'encoded_data': safe(encoded_data)})
 
     
         
@@ -253,4 +271,45 @@ def difficult(request):
 def logout_view(request):
     logout(request)
     return redirect(user_login)
+
+def feed(request):
+    if request.method == 'POST':
+        q_text = request.POST['question']
+        o1 = request.POST['option1']
+        o2 = request.POST['option2']
+        o3 = request.POST['option3']
+        o4 = request.POST['option4']
+        corr = request.POST['correct']
+        category = request.POST['category']
+        difficulty = request.POST['difficulty']
+        ind = 0
+        if o1 == corr:
+            ind=0
+        elif o2 == corr:
+            ind=1
+        elif o3 == corr:
+            ind=2
+        elif o4 == corr:
+            ind=3
+        
+        
+        
+        data = {
+            "category":category,
+            "difficulty": difficulty,
+            "question": q_text,
+            "options": [o1,o2,o3,o4],
+            "answer": ind
+        }
+
+        db.questions.insert_one(data)
+        return render(request,'adminpage.html')
+    return render(request, 'adminpage.html')
+
+
+def delete_user(request):
+    username = request.session.get('username')
+    user = get_object_or_404(User, username=username)
+    user.delete()
+    return redirect('user_login')
 
