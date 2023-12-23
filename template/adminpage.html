@@ -1,0 +1,20 @@
+<html>
+    <body><form method="POST" action="feed">{% csrf_token %}
+        <label for="question">question</label>
+        <input name="question" id="question"><br>
+        <label for="options">options</label>
+        <input name="option1" id="option1" placeholder="option1"><br>
+        <input name="option2" id="option2" placeholder="option2"><br>
+        <input name="option3" id="option3" placeholder="option3"><br>
+        <input name="option4" id="option4" placeholder="option4"><br>
+        <label for="correct">correct option</label>
+        <input type="tyext" name="correct" id="correct" placeholder="correct option"><br>
+        <label name="category" >Category</label>
+        <input type="text" name='category' id="category"><br>
+        <label name="difficulty" >Difficulty</label>
+        <input type="text" name='difficulty' id="difficulty"><br>
+        
+        <input type="submit" value="Submit the data">
+    </form>
+    </body>
+</html>

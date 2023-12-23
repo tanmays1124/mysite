@@ -29,5 +29,9 @@ urlpatterns = [
     path('easy',views.easy,name='easy'),
     path('medium',views.medium,name='medium'),
     path('difficult',views.difficult,name='difficult'),
-    path('logout',views.logout_view,name='logout')
+    path('logout',views.logout_view,name='logout'),
+    path('feed',views.feed,name="feed"),
+    path('delete',views.delete_user,name="delete"),
+    path('updated_score',views.updated_score,name='updated_score'),
+    path('history',views.history,name='history'),
 ]

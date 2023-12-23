@@ -3,20 +3,26 @@ from django.shortcuts import render,redirect
 from django.http import HttpResponse
 from bson.objectid import ObjectId
 from pymongo import MongoClient
-from django.contrib.auth.models import User
+# from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
 from django.views.decorators.csrf import csrf_protect
 import requests
 from django.contrib.auth.hashers import make_password
 from django.contrib import messages
-from .models import UserQuiz 
+from .models import UserQuiz, User
 from django.template.context_processors import csrf
+from django.shortcuts import get_object_or_404
+# import json
+import datetime
+from django.template.defaultfilters import safe
+# from djongo import BulkWrite
+
 
 # from django.utils import simplejson
 
 # Connect to MongoDB
 client = MongoClient()
-db = client['quiz']
+db = client['quizviz']
 
 
 
@@ -31,7 +37,7 @@ def user_login(request):
         password = request.POST['password']
         uname = request.POST['uname']
 
-        user = authenticate(username=uname, password=password)
+        user = User.objects.filter(username=uname).first()
 
         if user is not None:
             c = {}
@@ -39,8 +45,10 @@ def user_login(request):
             # login(request, user)
             name = user.first_name
             # print(name)
-
+            # if user.is_staff == True:
+            #     return render(request, 'adminpage.html')
             
+            request.session['username'] = uname
             return render(request, 'home.html',{'name':name}) 
              
 
@@ -63,7 +71,9 @@ def register(request):
             lname = request.POST['lname']
             email = request.POST['email']
             password = request.POST['password']
+            cpassword = request.POST['Cpassword']
             uname = request.POST['username']
+
 
 
             user_exists = User.objects.filter(username=uname).first() or User.objects.filter(email=email).exists()
@@ -80,17 +90,22 @@ def register(request):
                 if len(password) < 8:
                      messages.error(request, 'Password length should be greater than 8')
                      return redirect('register')
+                elif password!=cpassword:
+                    messages.error(request,"Password doesn't match")
+                    return redirect('register')
                 else:
                     hashed_password = make_password(password)
-                    User.objects.create(
+                    user_add = User(
                     email=email,
                     username=uname,
                     password=hashed_password,
                     first_name = fname,
                     last_name = lname
                     )
-
-                    UserQuiz.objects.create(username=uname,quiz_easy=[],quiz_medium=[],quiz_hard=[])
+                    user_add.save()
+                    
+                    user_quiz = UserQuiz(username=uname,quiz_easy=[],quiz_medium=[],quiz_hard=[])
+                    user_quiz.save()
                     
                     return redirect('user_login')            
             
@@ -177,8 +192,6 @@ def easy(request):
             "options": options,
             "questions": questions
             }
-
-    
         
     return render(request,'quiz.html',data)
 
@@ -204,16 +217,19 @@ def medium(request):
         
     print(questions)
     print(options)
+    import json
 
+    
+    
     data = {
             "answers": answers,
             "options": options,
             "questions": questions
             }
-
-    
+    # return JsonResponse(data)
+    data = json.dumps(data)
         
-    return render(request,'quiz.html',data)
+    return render(request,'quiz.html',{'data':data})
 
 
 
@@ -254,3 +270,69 @@ def logout_view(request):
     logout(request)
     return redirect(user_login)
 
+def feed(request):
+    if request.method == 'POST':
+        q_text = request.POST['question']
+        o1 = request.POST['option1']
+        o2 = request.POST['option2']
+        o3 = request.POST['option3']
+        o4 = request.POST['option4']
+        corr = request.POST['correct']
+        category = request.POST['category']
+        difficulty = request.POST['difficulty']
+        ind = 0
+        if o1 == corr:
+            ind=0
+        elif o2 == corr:
+            ind=1
+        elif o3 == corr:
+            ind=2
+        elif o4 == corr:
+            ind=3
+        
+        
+        
+        data = {
+            "category":category,
+            "difficulty": difficulty,
+            "question": q_text,
+            "options": [o1,o2,o3,o4],
+            "answer": ind
+        }
+
+        db.questions.insert_one(data)
+        return render(request,'adminpage.html')
+    return render(request, 'adminpage.html')
+
+
+def delete_user(request):
+    username = request.session.get('username')
+    user = get_object_or_404(User, username=username)
+    user.delete()
+    return redirect('user_login')
+
+
+
+def updated_score(request):
+    if request.method == 'POST':
+        updated_score = request.POST.get('updated_data')
+        username=request.session.get('username')
+        data = {
+            "score":updated_score,
+            "time": datetime.datetime.now(),
+
+        }
+        db.site1_userquiz.update_one({"username":username},{"$push":{"quiz_medium":data}})
+        
+    return HttpResponse('updated')
+
+
+def history(request):
+    uname = request.session.get("username")
+    user = UserQuiz.objects.filter(username=uname).first()
+    print(user.username)
+    # print(user.quiz_medium)
+    # print(user.quiz_medium)
+    return render(request,'history.html')
+
+ 
