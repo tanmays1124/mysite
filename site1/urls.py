@@ -23,7 +23,7 @@ urlpatterns = [
     path('register',views.register,name='register'),
     # path('register',views.registering, name='registering'),
     # path('logging',views.result,name='result'),
-    path('admin/', admin.site.urls),
+    # path('admin/', admin.site.urls),
     path('dashboard',views.dashboard,name='dashboard'),
     # path('',views.appview,name='QuizApiView')
     path('easy',views.easy,name='easy'),
