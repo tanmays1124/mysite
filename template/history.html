@@ -1,8 +1,29 @@
 <html>
     <head>
-        History
+        <title>History</title>
     </head>
     <body>
-        Your History here!
+            {% comment %} {% if data.easy %}
+            {% for d in data.easy %}
+        <div style='border: solid 2px red'>    {{d.score}} -> {{d.time}} -> Easy </div>
+            {% endfor %}
+            {% endif %}
+<br>
+            {% if data.medium %}
+            {% for d in data.medium %}
+            <div style='border: solid 2px red'>    {{d.score}} -> {{d.time}} -> Medium </div>
+            {% endfor %}
+            {% endif %}
+<br>
+
+            {% if data.hard %}
+            {% for d in data.hard %}
+            <div style='border: solid 2px red'>    {{d.score}} -> {{d.time}} -> Hard </div>
+            {% endfor %}
+            {% endif %} {% endcomment %}
+            {% for hstry in history%}
+            <div>{{hstry.score}} ---=> {{hstry.level}} ---=> {{hstry.time}}</div>
+            {% endfor %}
+
     </body>
 </html>

@@ -1,12 +1,5 @@
 from djongo import models
 
-class Questions(models.Model):
-  id = models.ObjectIdField(max_length=100,null=False,blank=True) 
-  str = models.CharField(max_length = 500)
-  class Meta:
-    abstract = True
-
-
 
 
 class User(models.Model):
@@ -21,28 +14,20 @@ class User(models.Model):
 
 
 
-class QuizAttempt(models.Model):
+class Questions(models.Model):  # Concrete subclass for Questions
+    id = models.ObjectIdField(max_length=100, null=False, blank=True)
+    str = models.CharField(max_length=500)
 
-  score = models.IntegerField()
-  time = models.DateTimeField()
-  questions = models.ArrayField(model_container=Questions)
-  answers = models.ArrayField(model_container=Questions)
-   
-  class Meta:
-    abstract = True
+class QuizAttempt(models.Model):  # Concrete subclass for QuizAttempt
+    id = models.ObjectIdField(primary_key=True)  # Use ObjectIdField for primary key
+    score = models.IntegerField()
+    time = models.DateTimeField()
+    questions = models.ArrayField(model_container=Questions)
+    answers = models.ArrayField(model_container=Questions)
 
 
 class UserQuiz(models.Model):
-    
-  username = models.CharField(max_length = 100,null=True,blank=True)
-
-  quiz_easy = models.ArrayField(
-      model_container=QuizAttempt
-   )
-  quiz_medium = models.ArrayField(
-      model_container=QuizAttempt
-   ) 
-  quiz_hard = models.ArrayField(
-      model_container=QuizAttempt
-   )
-
+    username = models.CharField(max_length=100, null=True, blank=True)
+    quiz_easy = models.ArrayField(model_container=QuizAttempt)  # Use concrete subclass
+    quiz_medium = models.ArrayField(model_container=QuizAttempt)
+    quiz_hard = models.ArrayField(model_container=QuizAttempt)

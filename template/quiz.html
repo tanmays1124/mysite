@@ -45,10 +45,13 @@
         </div>
         <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
         <script>
+
+              
             var data = JSON.parse("{{ data|escapejs }}");
             let ques = data.questions;
             let opt = data.options;
             let answer = data.answers;
+            let difficulty_lvl = data.difficulty_lvl;
             
          
             let length_of_q = ques.length;
@@ -102,6 +105,7 @@
                         url: "updated_score",
                         data: {
                            'updated_data': score,
+                           'difficulty': difficulty_lvl,
                            csrfmiddlewaretoken: '{{ csrf_token }}'
                         },
                         success: function(response) {

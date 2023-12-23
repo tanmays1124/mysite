@@ -12,7 +12,7 @@ from django.contrib import messages
 from .models import UserQuiz, User
 from django.template.context_processors import csrf
 from django.shortcuts import get_object_or_404
-# import json
+import json
 import datetime
 from django.template.defaultfilters import safe
 # from djongo import BulkWrite
@@ -190,10 +190,13 @@ def easy(request):
     data = {
             "answers": answers,
             "options": options,
-            "questions": questions
+            "questions": questions,
+            "difficulty_lvl": 'easy'
             }
+
+    data = json.dumps(data)
         
-    return render(request,'quiz.html',data)
+    return render(request,'quiz.html',{'data':data})
 
 
 
@@ -217,14 +220,14 @@ def medium(request):
         
     print(questions)
     print(options)
-    import json
 
     
     
     data = {
             "answers": answers,
             "options": options,
-            "questions": questions
+            "questions": questions,
+            "difficulty_lvl": 'medium'
             }
     # return JsonResponse(data)
     data = json.dumps(data)
@@ -255,15 +258,18 @@ def difficult(request):
     print(questions)
     print(options)
 
+    
+    
     data = {
             "answers": answers,
             "options": options,
-            "questions": questions
+            "questions": questions,
+            "difficulty_lvl": 'difficult'
             }
-
-    
+    # return JsonResponse(data)
+    data = json.dumps(data)
         
-    return render(request,'quiz.html',data)
+    return render(request,'quiz.html',{'data':data})
 
 
 def logout_view(request):
@@ -316,13 +322,23 @@ def delete_user(request):
 def updated_score(request):
     if request.method == 'POST':
         updated_score = request.POST.get('updated_data')
+        difficulty_lvl = request.POST.get('difficulty')
+        field =""
+
+        if difficulty_lvl =='medium':
+            field = "quiz_medium"
+        elif difficulty_lvl =='easy':
+            field = "quiz_easy"
+        else:
+            field = "quiz_hard"
+
         username=request.session.get('username')
         data = {
             "score":updated_score,
             "time": datetime.datetime.now(),
 
         }
-        db.site1_userquiz.update_one({"username":username},{"$push":{"quiz_medium":data}})
+        db.site1_userquiz.update_one({"username":username},{"$push":{field:data}})
         
     return HttpResponse('updated')
 
@@ -330,9 +346,32 @@ def updated_score(request):
 def history(request):
     uname = request.session.get("username")
     user = UserQuiz.objects.filter(username=uname).first()
-    print(user.username)
-    # print(user.quiz_medium)
-    # print(user.quiz_medium)
-    return render(request,'history.html')
+    easy = user.quiz_easy if user.quiz_easy else None
+    medium = user.quiz_medium if user.quiz_medium else None
+    hard = user.quiz_hard if user.quiz_hard else None
+    history =[]
+
+    for i in easy:
+        i['level'] = 'easy'
+        history.append(i)
+
+    for i in medium:
+        i['level'] = 'medium'
+        history.append(i)
+
+    for i in hard:
+        i['level'] = 'hard'
+        history.append(i)
+
+    history = sorted(history, key=lambda item: item['time'],reverse=True)
+    print(history)
+    
+    # data = {
+    #     'easy': easy,
+    #     'medium': medium,
+    #     'hard' : hard
+    # }
+    
+    return render(request,'history.html',{'history':history})
 
  
