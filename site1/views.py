@@ -350,27 +350,23 @@ def history(request):
     medium = user.quiz_medium if user.quiz_medium else None
     hard = user.quiz_hard if user.quiz_hard else None
     history =[]
-
-    for i in easy:
-        i['level'] = 'easy'
-        history.append(i)
-
-    for i in medium:
-        i['level'] = 'medium'
-        history.append(i)
-
-    for i in hard:
-        i['level'] = 'hard'
-        history.append(i)
+    if easy:
+        for i in easy:
+            i['level'] = 'easy'
+            history.append(i)
+    if medium:
+        for i in medium:
+            i['level'] = 'medium'
+            history.append(i)
+    if hard:
+        for i in hard:
+            i['level'] = 'hard'
+            history.append(i)
 
     history = sorted(history, key=lambda item: item['time'],reverse=True)
     print(history)
     
-    # data = {
-    #     'easy': easy,
-    #     'medium': medium,
-    #     'hard' : hard
-    # }
+
     
     return render(request,'history.html',{'history':history})
 

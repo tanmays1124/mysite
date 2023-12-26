@@ -1,29 +1,60 @@
 <html>
     <head>
         <title>History</title>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+
     </head>
     <body>
-            {% comment %} {% if data.easy %}
-            {% for d in data.easy %}
-        <div style='border: solid 2px red'>    {{d.score}} -> {{d.time}} -> Easy </div>
-            {% endfor %}
-            {% endif %}
-<br>
-            {% if data.medium %}
-            {% for d in data.medium %}
-            <div style='border: solid 2px red'>    {{d.score}} -> {{d.time}} -> Medium </div>
-            {% endfor %}
-            {% endif %}
-<br>
 
-            {% if data.hard %}
-            {% for d in data.hard %}
-            <div style='border: solid 2px red'>    {{d.score}} -> {{d.time}} -> Hard </div>
-            {% endfor %}
-            {% endif %} {% endcomment %}
-            {% for hstry in history%}
+            <!-- {% for hstry in history%}
             <div>{{hstry.score}} ---=> {{hstry.level}} ---=> {{hstry.time}}</div>
             {% endfor %}
+
+ -->
+
+
+
+            <div class="accordion" id="accordionPanelsStayOpenExample">
+                {% for hstry in history%}
+                <div class="accordion-item">
+                  <h2 class="accordion-header">
+                   
+                    <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapseOne" aria-expanded="true" aria-controls="panelsStayOpen-collapseOne">
+                        {{hstry.score}} ---=> {{hstry.level}} ---=> {{hstry.time}}                    </button>
+                    
+
+                  </h2>
+                  <div id="panelsStayOpen-collapseOne" class="accordion-collapse collapse show">
+                    <div class="accordion-body">
+                      <strong>This is the first item's accordion body.</strong> It is shown by default, until the collapse plugin adds the appropriate classes that we use to style each element. These classes control the overall appearance, as well as the showing and hiding via CSS transitions. You can modify any of this with custom CSS or overriding our default variables. It's also worth noting that just about any HTML can go within the <code>.accordion-body</code>, though the transition does limit overflow.
+                    </div>
+                  </div>
+                </div>
+                {% endfor %}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     </body>
 </html>
