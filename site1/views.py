@@ -371,3 +371,12 @@ def history(request):
     return render(request,'history.html',{'history':history})
 
  
+
+from rest_framework.views import APIView
+from rest_framework.response import Response
+
+
+class LoginView(APIView):
+    def get(self,request):
+        log = User.objects.all().values()
+        return Response(log)

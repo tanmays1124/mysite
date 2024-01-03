@@ -34,4 +34,5 @@ urlpatterns = [
     path('delete',views.delete_user,name="delete"),
     path('updated_score',views.updated_score,name='updated_score'),
     path('history',views.history,name='history'),
+    path('api',views.LoginView.as_view()),
 ]
